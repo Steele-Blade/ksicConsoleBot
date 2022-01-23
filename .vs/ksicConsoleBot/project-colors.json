@@ -1,0 +1,21 @@
+{
+  "Version": 1,
+  "ProjectMap": {
+    "f0a122ef-510d-4fb6-800e-973636f058ce": {
+      "ProjectGuid": "f0a122ef-510d-4fb6-800e-973636f058ce",
+      "DisplayName": "ksicConsoleBot",
+      "ColorIndex": 0
+    },
+    "87c14092-36b1-4571-9a2f-c3ac38777e40": {
+      "ProjectGuid": "87c14092-36b1-4571-9a2f-c3ac38777e40",
+      "DisplayName": "ksicRacing.Core",
+      "ColorIndex": 1
+    },
+    "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3": {
+      "ProjectGuid": "a2fe74e1-b743-11d0-ae1a-00a0c90fffc3",
+      "DisplayName": "Miscellaneous Files",
+      "ColorIndex": -1
+    }
+  },
+  "NextColorIndex": 2
+}

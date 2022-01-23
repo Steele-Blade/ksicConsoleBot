@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ksicConsoleBot", "ksicConsoleBot.csproj", "{F0A122EF-510D-4FB6-800E-973636F058CE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ksicRacing.Core", "..\ksicRacing.Core\ksicRacing.Core.csproj", "{87C14092-36B1-4571-9A2F-C3AC38777E40}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{07787F89-E7BD-4779-9C7D-5E710AAAC5C2}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F0A122EF-510D-4FB6-800E-973636F058CE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F0A122EF-510D-4FB6-800E-973636F058CE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F0A122EF-510D-4FB6-800E-973636F058CE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F0A122EF-510D-4FB6-800E-973636F058CE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87C14092-36B1-4571-9A2F-C3AC38777E40}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87C14092-36B1-4571-9A2F-C3AC38777E40}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87C14092-36B1-4571-9A2F-C3AC38777E40}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87C14092-36B1-4571-9A2F-C3AC38777E40}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {05E621B1-20CC-4DFD-B94E-A99A0C6147FF}
+	EndGlobalSection
+EndGlobal
