@@ -104,3 +104,5 @@ C:\Users\Ian\Source\Repos\ksicConsoleBot\obj\Release\net6.0\ksicConsoleBot.dll
 C:\Users\Ian\Source\Repos\ksicConsoleBot\obj\Release\net6.0\ref\ksicConsoleBot.dll
 C:\Users\Ian\Source\Repos\ksicConsoleBot\obj\Release\net6.0\ksicConsoleBot.pdb
 C:\Users\Ian\Source\Repos\ksicConsoleBot\obj\Release\net6.0\ksicConsoleBot.genruntimeconfig.cache
+C:\Users\Ian\Source\Repos\ksicConsoleBot\bin\Release\net6.0\appsettings.json
+C:\Users\Ian\Source\Repos\ksicConsoleBot\bin\Release\net6.0\Serilog.Extensions.Logging.dll
