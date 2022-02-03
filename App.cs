@@ -75,7 +75,7 @@ namespace ksicConsoleBot
                     TimeSpan ts = market.Description.MarketTime.AddMinutes(-30).ToLocalTime().Subtract(DateTime.Now);
                     if (ts > TimeSpan.Zero)
                     {
-                        _ = BackgroundJob.Schedule<SubscribeMarket>(x => SubscribeMarket.Subscribe(market), ts);
+                        _ = BackgroundJob.Schedule<SubscribeMarket>(x => SubscribeMarket.Subscribe(market, "_Open"), ts);
                     }
                 }
             }
@@ -85,7 +85,7 @@ namespace ksicConsoleBot
     }
     public class SubscribeMarket
     {
-        public static void Subscribe(MarketCatalogue market)
+        public static void Subscribe(MarketCatalogue market, string whichFile)
         {
             //1: Create a session provider
             AppKeyAndSessionProvider sessionProvider = new AppKeyAndSessionProvider(
@@ -102,11 +102,11 @@ namespace ksicConsoleBot
             ClientCache cache = new(client);
             //Register for change events
             cache.MarketCache.MarketChanged +=
-                (sender, arg) => OnMarketChanged(arg.Snap, cache, market);
+                (sender, arg) => OnMarketChanged(arg.Snap, cache, market, whichFile);
             cache.SubscribeMarkets(market.MarketId);
             Log.Logger?.Information($"Subscribed to {market.Event.Venue} {market.MarketName}");
         }
-        private static void OnMarketChanged(MarketSnap snap, ClientCache cache, MarketCatalogue market)
+        private static void OnMarketChanged(MarketSnap snap, ClientCache cache, MarketCatalogue market, string whichFile)
         {
             Log.Logger?.Information($"Got OnMarketChanged {snap.MarketDefinition.Venue} {market.MarketName.Split(' ')[0]} {(bool)snap.MarketDefinition.BspReconciled} {(bool)snap.MarketDefinition.InPlay}");
             if ((bool)snap.MarketDefinition.BspReconciled && (bool)snap.MarketDefinition.InPlay)
@@ -116,19 +116,53 @@ namespace ksicConsoleBot
             }
             else
             {
-                TimeSpan ts = snap.MarketDefinition.MarketTime.Value.AddMinutes(-1).ToLocalTime().Subtract(DateTime.Now);
-                if (ts > TimeSpan.Zero)
+                switch (whichFile)
                 {
-                    _ = BackgroundJob.Schedule<SubscribeMarket>(x => Subscribe(market), ts);
-                    Log.Logger?.Information($"Rescheduled {snap.MarketDefinition.Venue} {market.MarketName.Split(' ')[0]} for {ts.TotalSeconds}");
-                    WriteRecords(snap, market, "_Open");
+                    case "_Open":
+                        _ = BackgroundJob.Schedule<SubscribeMarket>(x => Subscribe(market, "_30"), snap.MarketDefinition.MarketTime.Value.AddSeconds(-30).ToLocalTime().Subtract(DateTime.Now));
+                        Log.Logger?.Information($"Rescheduled {snap.MarketDefinition.Venue} {market.MarketName.Split(' ')[0]} until 30 seconds before.");
+                        WriteRecords(snap, market, whichFile);
+                        break;
+                    case "_30":
+                        _ = BackgroundJob.Schedule<SubscribeMarket>(x => Subscribe(market, "_20"), snap.MarketDefinition.MarketTime.Value.AddSeconds(-20).ToLocalTime().Subtract(DateTime.Now));
+                        Log.Logger?.Information($"Rescheduled {snap.MarketDefinition.Venue} {market.MarketName.Split(' ')[0]} until 20 seconds before.");
+                        WriteRecords(snap, market, whichFile);
+                        break;
+                    case "_20":
+                        _ = BackgroundJob.Schedule<SubscribeMarket>(x => Subscribe(market, "_10"), snap.MarketDefinition.MarketTime.Value.AddSeconds(-10).ToLocalTime().Subtract(DateTime.Now));
+                        Log.Logger?.Information($"Rescheduled {snap.MarketDefinition.Venue} {market.MarketName.Split(' ')[0]} until 10 seconds before.");
+                        WriteRecords(snap, market, whichFile);
+                        break;
+                    case "_10":
+                        _ = BackgroundJob.Schedule<SubscribeMarket>(x => Subscribe(market, "_Jump"), snap.MarketDefinition.MarketTime.Value.ToLocalTime().Subtract(DateTime.Now));
+                        Log.Logger?.Information($"Rescheduled {snap.MarketDefinition.Venue} {market.MarketName.Split(' ')[0]} until jump time.");
+                        WriteRecords(snap, market, whichFile);
+                        break;
+                    case "_Jump":
+                        _ = BackgroundJob.Schedule<SubscribeMarket>(x => Subscribe(market, "1"), snap.MarketDefinition.MarketTime.Value.AddSeconds(30).ToLocalTime().Subtract(DateTime.Now));
+                        Log.Logger?.Information($"Rescheduled {snap.MarketDefinition.Venue} {market.MarketName.Split(' ')[0]} for 30 seconds.");
+                        WriteRecords(snap, market, whichFile);
+                        break;
+                    default:
+                        int i = Convert.ToInt32(whichFile);
+                        _ = BackgroundJob.Schedule<SubscribeMarket>(x => Subscribe(market, (i + 1).ToString()), snap.MarketDefinition.MarketTime.Value.AddSeconds((i + 1) * 30).ToLocalTime().Subtract(DateTime.Now));
+                        Log.Logger?.Information($"Rescheduled {snap.MarketDefinition.Venue} {market.MarketName.Split(' ')[0]} for 30 seconds.");
+                        WriteRecords(snap, market, $"_{i}");
+                        break;
                 }
-                else
-                {
-                    _ = BackgroundJob.Schedule<SubscribeMarket>(x => Subscribe(market), TimeSpan.FromSeconds(30));
-                    Log.Logger?.Information($"Rescheduled {snap.MarketDefinition.Venue} {market.MarketName.Split(' ')[0]} for 30 seconds");
-                    WriteRecords(snap, market, string.Empty);
-                }
+                //TimeSpan ts = snap.MarketDefinition.MarketTime.Value.AddMinutes(-1).ToLocalTime().Subtract(DateTime.Now);
+                //if (ts > TimeSpan.Zero)
+                //{
+                //    _ = BackgroundJob.Schedule<SubscribeMarket>(x => Subscribe(market), ts);
+                //    Log.Logger?.Information($"Rescheduled {snap.MarketDefinition.Venue} {market.MarketName.Split(' ')[0]} for {ts.TotalSeconds}");
+                //    WriteRecords(snap, market, "_Open");
+                //}
+                //else
+                //{
+                //    _ = BackgroundJob.Schedule<SubscribeMarket>(x => Subscribe(market), TimeSpan.FromSeconds(30));
+                //    Log.Logger?.Information($"Rescheduled {snap.MarketDefinition.Venue} {market.MarketName.Split(' ')[0]} for 30 seconds");
+                //    WriteRecords(snap, market, string.Empty);
+                //}
             }
             Console.WriteLine(snap);
             if (cache.Status == ConnectionStatus.SUBSCRIBED)
